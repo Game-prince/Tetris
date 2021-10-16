@@ -2,8 +2,6 @@ import pygame
 from pygame.constants import KEYDOWN, QUIT
 from pygame.color import THECOLORS
 
-from block import Block
-
 pygame.init()
 
 # width and height of the game window
@@ -22,6 +20,30 @@ GAME_STATE = "play"
 # setting up clock
 clock = pygame.time.Clock()
 
+# block class
+class Block:
+    """ This will define every block of the game """
+
+    def __init__(self, row, col) -> None:
+        
+        # giving row and column to the block
+        self.row = row
+        self.col = col
+
+        # Dimension
+        self.size = 40
+
+        # some extra properties
+        self.color = THECOLORS['white']
+
+def find_block(row, col, blocks):
+
+    for bls in blocks:
+        for bl in bls:
+            if bl.row == row and bl.col == col:
+                return bl
+    return None
+
 
 # game loop
 while not GAME_OVER:
@@ -35,8 +57,22 @@ while not GAME_OVER:
     SCREEN.fill(THECOLORS["black"])
 
     if GAME_STATE == 'play':
-        block = Block()
-        block.render(SCREEN)
+        
+        All_blocks = []
+
+        cols = WINDOW_HEIGHT // 40
+        rows = WINDOW_WIDTH // 40
+
+        for row in range(rows):
+            temp = []
+            for col in range(cols):
+                block = Block(row, col)
+                temp.append(block)
+            All_blocks.append(temp)
+        
+        for blocks in All_blocks:
+            for block in blocks:
+                pygame.draw.rect(SCREEN, block.color, [block.row*40, block.col*40, 40, 40], 2)
 
     #u pdating the screen
     pygame.display.flip()
