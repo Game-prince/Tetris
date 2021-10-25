@@ -1,6 +1,9 @@
 import pygame
+from pygame import scrap
 from pygame.constants import KEYDOWN, QUIT
 from pygame.color import THECOLORS
+from pattern import make_pattern
+from random import randint
 
 pygame.init()
 
@@ -22,28 +25,26 @@ clock = pygame.time.Clock()
 
 # block class
 class Block:
-    """ This will define every block of the game """
 
-    def __init__(self, row, col) -> None:
+    def __init__(self, row, col, color):
+
+        self.x = col * 40
+        self.y = row * 40
+
+        self.surf = pygame.Surface([40, 40])
+        self.rect = pygame.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+        self.color = color
         
-        # giving row and column to the block
-        self.row = row
-        self.col = col
+        self.surf.fill(self.color)
 
-        # Dimension
-        self.size = 40
+    def render(self):
+        
+        SCREEN.blit(self.surf, self.rect)
 
-        # some extra properties
-        self.color = THECOLORS['white']
-
-def find_block(row, col, blocks):
-
-    for bls in blocks:
-        for bl in bls:
-            if bl.row == row and bl.col == col:
-                return bl
-    return None
-
+All_blocks = []
 
 # game loop
 while not GAME_OVER:
@@ -58,17 +59,21 @@ while not GAME_OVER:
 
     if GAME_STATE == 'play':
         
-        All_blocks = []
+        curr_arr = make_pattern(randint(1, 5))
+        curr_blocks = []
+
+        color = randint(0, len(THECOLORS)-1)
+        block_color = (123, 123, 123)
+        for key in THECOLORS:
+            color -= 1
+            if (color == 0):
+                block_color = THECOLORS[key]
+
+        for e in curr_arr:
+            curr_blocks.append(Block(e//10, e%10, block_color))
 
         cols = WINDOW_HEIGHT // 40
         rows = WINDOW_WIDTH // 40
-
-        for row in range(rows):
-            temp = []
-            for col in range(cols):
-                block = Block(row, col)
-                temp.append(block)
-            All_blocks.append(temp)
         
         for blocks in All_blocks:
             for block in blocks:
