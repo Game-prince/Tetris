@@ -7,7 +7,7 @@ Directions = ["up", "left", "down", "right"]
 def make_pattern(n : int) -> list():
 
     if (n == 1) : 
-        return [0]
+        return [5]
     
     ans = [0]
     n -= 1
@@ -39,3 +39,16 @@ def make_pattern(n : int) -> list():
     for i in range(len(ans)):
         ans[i] += 5
     return ans
+
+# block = {
+#     'id' : 0,
+#     'width' : 40,
+#     'height' : 40,
+#     'color' : THECOLORS["orange"],
+# }
+
+# a = block.copy()
+# a['id'] = 5
+# a['color'] = THECOLORS['green']
+# print(a)
+# print(block)

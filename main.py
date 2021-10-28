@@ -1,86 +1,111 @@
+# Making a tetrix game using pygame
+from random import randint
 import pygame
-from pygame import scrap
-from pygame.constants import KEYDOWN, QUIT
 from pygame.color import THECOLORS
 from pattern import make_pattern
-from random import randint
 
 pygame.init()
 
-# width and height of the game window
-WINDOW_WIDTH = 400
-WINDOW_HEIGHT = 600
-
-# setting up display
-SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+WIDTH = 400
+HEIGHT = 600
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
 
-# Constant which checks if the game is over or not
-GAME_OVER = False
-# constant to keep the current game state
-GAME_STATE = "play"
-
-# setting up clock
 clock = pygame.time.Clock()
 
-# block class
-class Block:
+# Properties of the block
+Block_size = 40
 
-    def __init__(self, row, col, color):
+# Number of rows and columns
+ROWS = HEIGHT // Block_size
+COLUMNS = WIDTH // Block_size
 
-        self.x = col * 40
-        self.y = row * 40
+BLOCK = {
+    'id' : 0,
+    'size' : Block_size,
+    'color' : THECOLORS["black"],
+    'background' : THECOLORS['black'],
+    'border' : False,
+    'x' : 0,
+    'y' : 0 
+}
 
-        self.surf = pygame.Surface([40, 40])
-        self.rect = pygame.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+# function to display the object on screen
+def render(object, screen=SCREEN) -> None:
 
-        self.color = color
+    width = height = object['size']
+
+    surf = pygame.Surface([width, height])
+    rect = surf.get_rect()
+    rect.x = object['x']
+    rect.y = object['y']
+
+    surf.fill(object['background'])
+    pygame.draw.rect(surf, object['color'], [0, 0, width, height], border_radius= 5 if object['border'] else 0)
+
+    screen.blit(surf, rect)
+
+# for moving the blocks
+def move(object, screen=SCREEN) -> None:
+
+    object['y'] += COLUMNS
+
+# Game State
+GAMESTATE = "play"
+
+# play state constants
+MakePattern = True
+Current_pattern = []
+All_Pattern = []
+
+
+while True:
+
+    events = pygame.event.get();
+    for event in events:
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+    
+    SCREEN.fill(THECOLORS['black'])
+
+    # Renderin the game according to differnt gamestate
+    if GAMESTATE == 'play':
         
-        self.surf.fill(self.color)
-
-    def render(self):
+        block_arr = []
+        for row in range(ROWS):
+            for col in range(COLUMNS):
+                block = BLOCK.copy()
+                block['id'] = row*COLUMNS + col
+                block['x'] = col*Block_size
+                block['y'] = row*Block_size
+                block_arr.append(block)
         
-        SCREEN.blit(self.surf, self.rect)
+        if MakePattern:
+            pattern = make_pattern(randint(1, 5))
 
-All_blocks = []
-
-# game loop
-while not GAME_OVER:
-
-    #event handling for our game
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            GAME_OVER = True
-
-    # filling the screen with black color
-    SCREEN.fill(THECOLORS["black"])
-
-    if GAME_STATE == 'play':
+            min_height = min(pattern)
+            
+            Current_pattern = pattern
+            MakePattern = False
         
-        curr_arr = make_pattern(randint(1, 5))
-        curr_blocks = []
+        for block in block_arr:
+            if Current_pattern.__contains__(block['id']):
+                block['color'] = THECOLORS['green']
+                block['border'] = True
+            for patterns in All_Pattern:
+                if patterns.__contains__(block['id']):
+                    block['color'] = THECOLORS['green']
+                    block['border'] = True
+            render(block)
 
-        color = randint(0, len(THECOLORS)-1)
-        block_color = (123, 123, 123)
-        for key in THECOLORS:
-            color -= 1
-            if (color == 0):
-                block_color = THECOLORS[key]
-
-        for e in curr_arr:
-            curr_blocks.append(Block(e//10, e%10, block_color))
-
-        cols = WINDOW_HEIGHT // 40
-        rows = WINDOW_WIDTH // 40
+        for i in range(len(Current_pattern)):
+            Current_pattern[i] += COLUMNS
+            if Current_pattern[i] > COLUMNS*(ROWS-1): 
+                MakePattern = True
+                All_Pattern.append(Current_pattern)
         
-        for blocks in All_blocks:
-            for block in blocks:
-                pygame.draw.rect(SCREEN, block.color, [block.row*40, block.col*40, 40, 40], 2)
 
-    #u pdating the screen
     pygame.display.flip()
 
-    # running the game at 60 fps
-    clock.tick(60)
+    clock.tick(2)
