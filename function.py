@@ -40,15 +40,11 @@ def make_pattern(n : int) -> list():
         ans[i] += 5
     return ans
 
-# block = {
-#     'id' : 0,
-#     'width' : 40,
-#     'height' : 40,
-#     'color' : THECOLORS["orange"],
-# }
+# Generating a random color from THECOLORS
+def random_color() -> tuple():
+    random_position = randint(0, len(THECOLORS)-1)
 
-# a = block.copy()
-# a['id'] = 5
-# a['color'] = THECOLORS['green']
-# print(a)
-# print(block)
+    for color in THECOLORS:
+        if random_position == 0:
+            return THECOLORS[color]
+        random_position -= 1

@@ -2,7 +2,7 @@ from random import randint
 import pygame
 from pygame import cursors
 from pygame.color import THECOLORS
-from pattern import make_pattern
+from function import make_pattern, random_color
 
 pygame.init()
 
@@ -64,6 +64,18 @@ MakePattern = True
 Current_pattern = []
 All_Pattern = []
 Time_passed = 0
+current_color = random_color()
+
+# function to find if the block is present at id
+def is_present(id : int) -> bool:
+
+    if len(All_Pattern) == 0:
+        return False
+    for patterns in All_Pattern:
+        for block in patterns:
+            if block == id:
+                return True
+    return False
 
 while True:
 
@@ -83,17 +95,20 @@ while True:
             if GAMESTATE == "play":
 
                 # moving the pattern block if left or right key is pressed
-                for patterns in All_Pattern:
-                    for i in range(len(Current_pattern)):
-                        if pattern.__contains__(Current_pattern[i]):
-                            print("Already a block there")
+                can_move = True
                 if event.key == pygame.K_LEFT:
-                    if min(Current_pattern) % COLUMNS > 0:
+                    for block in Current_pattern:
+                        if is_present(block - 1):
+                            can_move = False
+                    if can_move and min(Current_pattern) % COLUMNS > 0:
                         for i in range(len(Current_pattern)):
                             Current_pattern[i] -= 1
 
                 if event.key == pygame.K_RIGHT:
-                    if max(Current_pattern) % COLUMNS < COLUMNS - 1:
+                    for block in Current_pattern:
+                        if is_present(block + 1):
+                            can_move = False
+                    if can_move and max(Current_pattern) % COLUMNS < COLUMNS - 1:
                         for i in range(len(Current_pattern)):
                             Current_pattern[i] += 1
     
@@ -124,6 +139,7 @@ while True:
             
             # setting the pattern to current pattern
             Current_pattern = pattern
+            current_color = random_color()
 
             # changing the MakePattern to False
             MakePattern = False
@@ -133,14 +149,14 @@ while True:
 
             # rendering current blocks
             if Current_pattern.__contains__(block['id']):
-                block['color'] = THECOLORS['green']
+                block['color'] = current_color
                 block['border'] = True
             
             # rendering the landed blocks
-            for patterns in All_Pattern:
-                if patterns.__contains__(block['id']):
-                    block['color'] = THECOLORS['green']
-                    block['border'] = True
+            # for patterns in All_Pattern:
+            #     if patterns.__contains__(block['id']):
+            #         block['color'] = THECOLORS['green']
+            #         block['border'] = True
             render(block)
 
         # moving the block
