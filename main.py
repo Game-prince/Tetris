@@ -164,15 +164,12 @@ while True:
             for i in range(len(Current_pattern)):
                 Current_pattern[i] += COLUMNS
                 Time_passed = 0
-                if Current_pattern[i] > COLUMNS*(ROWS-1): 
+                if Current_pattern[i] > COLUMNS*(ROWS-1) or is_present(Current_pattern[i] + COLUMNS): 
                     MakePattern = True
+                    
                     All_Pattern.append(Current_pattern)
-                for pattern in All_Pattern:
-                    if pattern.__contains__(Current_pattern[i] + COLUMNS):
-                        MakePattern = True
-                        All_Pattern.append(Current_pattern)
-                        
-        
+
+
     Time_passed += 1
     pygame.display.flip()
 
