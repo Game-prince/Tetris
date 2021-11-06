@@ -16,9 +16,11 @@ def transition(initial, final, time):
     # initializing the variables
     current = initial
     change = final - initial
-    step = change // time
+    step = change / time
 
     # making the loop
-    for i in range(time):
+    for i in range(time-1):
         current += step
         yield current
+    
+    yield final
