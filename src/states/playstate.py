@@ -1,4 +1,5 @@
 import pygame
+from src.functions import Write
 from src.states.base import Base
 
 class Play(Base):
@@ -7,13 +8,12 @@ class Play(Base):
         super().__init__()
 
     def render(self) -> None:
-        pass
+        
+        Write("Playstate", 50, 50, (255, 255, 255), 24, self.screen)
 
     def update(self, params) -> None:
-        pass
+        
+        self.render()
 
     def enter(self, **param) -> None:
-        pass
-
-    def leave(self) -> None:
-        pass
+        self.screen = param['screen']

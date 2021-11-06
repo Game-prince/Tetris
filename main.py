@@ -28,13 +28,6 @@ gstatemachine = Statemachine(states)
 gstatemachine.change("start", screen=screen, gstatemachine=gstatemachine)
 gstatemachine.render()
 
-# custom events
-current_event = 1
-move = pygame.USEREVENT + current_event
-current_event += 1
-
-pygame.time.set_timer(move, 200)
-
 # Main loop
 running = True
 while running:
@@ -44,7 +37,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill(THECOLORS["black"])
+    screen.fill(THECOLORS['black'])
     gstatemachine.update(events)
     pygame.display.flip()
     clock.tick(60)
