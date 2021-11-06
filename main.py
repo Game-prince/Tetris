@@ -1,5 +1,9 @@
 import pygame
 from pygame.color import THECOLORS
+from src.statemachine import Statemachine
+from src.states.playstate import Play
+
+from src.states.startstate import Start
 
 pygame.init()
 
@@ -13,6 +17,16 @@ pygame.display.set_caption("Tetris")
 
 # clock 
 clock = pygame.time.Clock()
+
+# states
+states = {
+    "start" : Start(),
+    "play" : Play()
+}
+
+gstatemachine = Statemachine(states)
+gstatemachine.change("start", screen=screen, gstatemachine=gstatemachine)
+gstatemachine.render()
 
 # custom events
 current_event = 1
@@ -29,7 +43,9 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
-            
+
+    screen.fill(THECOLORS["black"])
+    gstatemachine.update(events)
     pygame.display.flip()
     clock.tick(60)
             

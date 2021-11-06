@@ -19,12 +19,12 @@ class Statemachine:
     
         """ This function is called while changing the state """
         
-        if not state in states: return
+        if not state in self.states: return
         
         if self.current:
             self.current.leave()
         
-        self.current = states[state]
+        self.current = self.states[state]
         self.current.enter(**param)
         
     def render(self) -> None:
@@ -35,4 +35,4 @@ class Statemachine:
     def update(self, events) -> None:
         """ This function will update the current function """
         
-        self.current.update()
+        self.current.update(events)
