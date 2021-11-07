@@ -21,6 +21,8 @@ class Play(Base):
         if self.just_started:
             try:
                 self.levelDisplayer_rect.y = next(self.cordy)
+                if (self.levelDisplayer_rect.y == self.screen_width // 2 - 50):
+                    pygame.time.wait(2)
             except StopIteration:
                 self.just_started = False
 
@@ -39,4 +41,4 @@ class Play(Base):
         self.levelDisplayer_rect.x = 0
         self.levelDisplayer_rect.y = -100
         
-        self.cordy = transition(-100, self.screen_height // 2 - 50, 60)
+        self.cordy = transition(-100, self.screen_height + 50, 120)
