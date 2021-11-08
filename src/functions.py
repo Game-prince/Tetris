@@ -52,7 +52,12 @@ def make_pattern(count : int, size:int) -> list:
 
 def random_color():
     """ This function will return a random color """
-    return (randint(0, 255), randint(0, 255), randint(0, 255))
+    color = (randint(0, 255), randint(0, 255), randint(0, 255))
+
+    while color == (0, 0, 0):
+        color = (randint(0, 255), randint(0, 255), randint(0, 255))
+
+    return color
 
 def make_block(pos, color) -> BLOCK:
     block = BLOCK.copy()
@@ -61,3 +66,48 @@ def make_block(pos, color) -> BLOCK:
     block['color'] = color
 
     return block
+
+def closest(a:int, b:int) ->int:
+    """ Return an integer which is closes to b and divisible by a """
+
+    b = round(b/a) * a
+
+    return b
+
+def big_small(blocks) -> list:
+    """ 
+    Return a list of minimum and maximum cordinates in the blocks.
+    Return Order:
+        [min_x, min_y, max_x, max_y]
+    """
+
+    lst = [blocks[0]['x'], blocks[0]['y'], blocks[0]['x'], blocks[0]['y']]
+
+    for block in blocks:
+        if block['x'] < lst[0]:
+            lst[0] = block['x']
+        if block['y'] < lst[1]:
+            lst[1] = block['y']
+        if block['x'] > lst[2]:
+            lst[2] = block['x']
+        if block['y'] > lst[3]:
+            lst[3] = block['y']
+    return lst
+
+
+def colliding(all_blocks, current_blocks):
+    """ This function will check if the moving blocks are colliding with the current blocks """
+
+    def block_collision(block1, block2):
+        """ This function will check if two blocks are colliding """
+
+        if block1['x'] == block2['x'] and block1['y'] + block1['height'] >= block2['y'] and block1['y'] + block1['height'] <= block2['y']:
+            return True
+        else:
+            return False
+    
+    for block in current_blocks:
+        for other in all_blocks:
+            if block_collision(block, other):
+                return True
+    return False
