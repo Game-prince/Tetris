@@ -8,7 +8,10 @@ def Write(text, x, y, color, size, screen, center=True):
     font = pygame.font.SysFont("Comis sans MS", size)
     text = font.render(text, True, color)
     text_rect = text.get_rect()
-    text_rect.center = (x, y)
+    if center:text_rect.center = (x, y)
+    else:
+        text_rect.x = x
+        text_rect.y = y
     screen.blit(text, text_rect)
 
 
@@ -110,4 +113,38 @@ def colliding(all_blocks, current_blocks):
         for other in all_blocks:
             if block_collision(block, other):
                 return True
+    return False
+
+def row_full(all_blocks) -> bool :
+    """ checking if all the blocks int any row are full or not """
+    if len(all_blocks) == 0:
+        return False
+
+    curr = all_blocks[0]['y']
+    count = 0
+
+    for block in all_blocks:
+        if block['y'] == curr:
+            count += 1
+
+        else:
+            if (count == 10): return curr
+            count = 1
+            curr = block['y']
+    
+    if count == 10:
+        return curr
+
+    return False
+
+def is_block_there(x:int, y:int, all_blocks) -> bool:
+    """ Checks if the block is present there or not in landed blocks """
+
+    if len(all_blocks) == 0:
+        return False
+
+    for block in all_blocks:
+        if block['x'] == x and block['y'] == 'y':
+            return True
+    
     return False

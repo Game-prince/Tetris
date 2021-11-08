@@ -2,7 +2,7 @@ from random import randint
 import pygame
 from pygame.color import THECOLORS
 from pygame.constants import K_LEFT, K_RIGHT, KEYDOWN
-from src.functions import Write, big_small, closest, colliding, make_block, make_pattern, random_color, transition
+from src.functions import Write, big_small, closest, colliding, is_block_there, make_block, make_pattern, random_color, row_full, transition
 from src.states.base import Base
 
 class Play(Base):
@@ -48,6 +48,9 @@ class Play(Base):
             for block in self.all_blocks:
                 pygame.draw.rect(self.screen, block['color'], (block['x'], block['y'], block['width'], block['height']), border_radius=block['radius'])
 
+            # rendering score
+            Write(f"Score : {self.score}", 10, 5, THECOLORS['white'], 24, self.screen, False)
+
 
     def update(self, params) -> None:
 
@@ -58,11 +61,13 @@ class Play(Base):
                 if event.key == K_LEFT:
                     if lst[0] > 0:
                         for block in self.moving_blocks:
-                            block['x'] -= block['width']
+                            if not is_block_there(block['x'] - block['width'], block['y'], self.all_blocks):
+                                block['x'] -= block['width']
                 if event.key == K_RIGHT:
                     if lst[2] < self.screen_width - 40:
                         for block in self.moving_blocks:
-                            block['x'] += block['width']
+                            if not is_block_there(block['x'] - block['width'], block['y'], self.all_blocks):
+                                block['x'] += block['width']
 
         # game started animation
         if self.just_started:
@@ -97,6 +102,7 @@ class Play(Base):
                     block = make_block(pattern, self.current_block_color)
                     self.moving_blocks.append(block)
                 
+                self.all_blocks = sorted(self.all_blocks, key=lambda x: x['y'])
                 self.ismoving = True
                     
 
@@ -106,6 +112,16 @@ class Play(Base):
             # collision between moving blocks and already landed blocks
             if colliding(self.all_blocks, self.moving_blocks):
                 self.ismoving = False
+
+            # checking if any row is full
+            curr = row_full(self.all_blocks)
+            if curr != False:
+                self.all_blocks = list(filter(lambda x : x['y'] != curr, self.all_blocks))
+                self.score += 150
+
+                for block in self.all_blocks:
+                    if block['y'] < curr:
+                        block['y'] += block['height']
 
         self.render() 
 
