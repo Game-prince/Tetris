@@ -14,8 +14,8 @@ class Start(Base):
 
     def render(self) -> None:
         
-        Write("Tetris", self.screen_width // 2, self.screen_height // 2 - 100, THECOLORS["darkgoldenrod"], 72, self.screen)
-        Write("Press Enter to play", self.screen_width // 2, self.screen_height // 2, THECOLORS["darkgoldenrod"], 24, self.screen)
+        Write("Tetris", self.screen_width // 2, self.screen_height // 2, THECOLORS["darkgoldenrod"], 100, self.screen)
+        Write("Press Enter to play", self.screen_width // 2, self.screen_height // 2 + 100, THECOLORS["skyblue"], 24, self.screen)
 
     def update(self, params) -> None:
 

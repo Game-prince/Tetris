@@ -148,3 +148,8 @@ def is_block_there(x:int, y:int, all_blocks) -> bool:
             return True
     
     return False
+
+def rotate_blocks(blocks:list):
+    """ This function will rotate the current moving blocks for better positioning. """
+
+    pass

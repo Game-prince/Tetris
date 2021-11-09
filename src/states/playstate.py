@@ -36,7 +36,7 @@ class Play(Base):
     def render(self) -> None:
         
         if self.just_started :
-            Write("Level 1", self.levelDisplayer_rect.width // 2, self.levelDisplayer_rect.height // 2, (255, 255, 255), 48,  self.levelDisplayer)
+            Write("Level 1", self.levelDisplayer_rect.width // 2, self.levelDisplayer_rect.height // 2, THECOLORS['white'], 48,  self.levelDisplayer)
             self.screen.blit(self.levelDisplayer, self.levelDisplayer_rect)
 
         else:
@@ -49,7 +49,7 @@ class Play(Base):
                 pygame.draw.rect(self.screen, block['color'], (block['x'], block['y'], block['width'], block['height']), border_radius=block['radius'])
 
             # rendering score
-            Write(f"Score : {self.score}", 10, 5, THECOLORS['white'], 24, self.screen, False)
+            Write(f"Score : {self.score}", 10, 5, THECOLORS['goldenrod'], 24, self.screen, False)
 
 
     def update(self, params) -> None:
@@ -122,6 +122,11 @@ class Play(Base):
                 for block in self.all_blocks:
                     if block['y'] < curr:
                         block['y'] += block['height']
+
+        # checking if the game is over
+        for blocks in self.all_blocks:
+            if blocks['y'] == 0:
+                self.gstatemachine.change('gameover', screen=self.screen, gstatemachine=self.gstatemachine, score=self.score)
 
         self.render() 
 

@@ -1,6 +1,7 @@
 import pygame
 from pygame.color import THECOLORS
 from src.statemachine import Statemachine
+from src.states.gameover import Over
 from src.states.playstate import Play
 
 from src.states.startstate import Start
@@ -21,7 +22,8 @@ clock = pygame.time.Clock()
 # states
 states = {
     "start" : Start(),
-    "play" : Play()
+    "play" : Play(),
+    "gameover" : Over()
 }
 
 gstatemachine = Statemachine(states)
