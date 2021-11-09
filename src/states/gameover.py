@@ -11,7 +11,16 @@ class Over(Base):
 
         self.justentered = True
         self.background_color = transition(0, 255, 30)
+
+        self.animated_font = {
+            "big" : transition(0, 80, 20),
+            "small" : transition(0, 32, 20)
+        }
         
+        self.curr_font = {
+            "big" : 0,
+            "small" : 0
+        }
 
     def enter(self, **param):
         self.screen = param['screen']
@@ -23,8 +32,8 @@ class Over(Base):
     def render(self):
 
         if not self.justentered:
-            Write("Game Over", self.screen_width // 2, self.screen_height // 2, THECOLORS['darkred'], 80, self.screen)
-            Write(f"score :{self.score}", self.screen_width // 2, self.screen_height // 2 + 100, THECOLORS['goldenrod'], 32, self.screen)
+            Write("Game Over", self.screen_width // 2, self.screen_height // 2, THECOLORS['darkred'], int(self.curr_font['big']), self.screen)
+            Write(f"score: {self.score}", self.screen_width // 2, self.screen_height // 2 + 100, THECOLORS['goldenrod'], int(self.curr_font['small']), self.screen)
 
     def update(self, param):
         
@@ -34,6 +43,16 @@ class Over(Base):
                 self.screen.fill((color, color, color))
             except StopIteration:
                 self.justentered = False
+        else:
+            try:
+                self.curr_font["big"] = next(self.animated_font["big"])
+            except StopIteration:
+                self.curr_font["big"] = 80
+            
+            try:
+                self.curr_font["small"] = next(self.animated_font["small"])
+            except StopIteration:
+                self.curr_font["small"] = 32
 
         
         self.render()
