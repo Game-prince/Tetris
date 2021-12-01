@@ -1,8 +1,8 @@
 from random import randint
 import pygame
 from pygame.color import THECOLORS
-from pygame.constants import K_LEFT, K_RIGHT, KEYDOWN
-from src.functions import Write, big_small, closest, colliding, is_block_there, make_block, make_pattern, random_color, row_full, transition
+from pygame.constants import K_LEFT, K_RIGHT, K_SPACE, KEYDOWN
+from src.functions import Write, big_small, closest, colliding, is_block_there, make_block, make_pattern, random_color, rotate_blocks, row_full, transition
 from src.states.base import Base
 
 class Play(Base):
@@ -32,6 +32,9 @@ class Play(Base):
         
         # all blocks
         self.all_blocks = []
+
+        # if the game is in animationstate
+        self.is_animating = False
 
     def render(self) -> None:
         
@@ -68,6 +71,10 @@ class Play(Base):
                         for block in self.moving_blocks:
                             if not is_block_there(block['x'] - block['width'], block['y'], self.all_blocks):
                                 block['x'] += block['width']
+                # if event.key == K_SPACE:
+                #     print("space key is pressed")
+                #     self.moving_blocks = rotate_blocks(self.moving_blocks)
+
 
         # game started animation
         if self.just_started:
@@ -116,6 +123,7 @@ class Play(Base):
             # checking if any row is full
             curr = row_full(self.all_blocks)
             if curr != False:
+                animated_blocks = list(filter(lambda x : x['y'] == curr, self.all_blocks))
                 self.all_blocks = list(filter(lambda x : x['y'] != curr, self.all_blocks))
                 self.score += 150
 
@@ -131,7 +139,7 @@ class Play(Base):
         self.render() 
 
     def enter(self, **param) -> None:
-        self.screen = param['screen']
+        self.screen = pygame.display.get_surface()
         self.screen_width = self.screen.get_width()
         self.screen_height = self.screen.get_height()
         self.gstatemachine = param['gstatemachine']

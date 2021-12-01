@@ -152,4 +152,25 @@ def is_block_there(x:int, y:int, all_blocks) -> bool:
 def rotate_blocks(blocks:list):
     """ This function will rotate the current moving blocks for better positioning. """
 
-    pass
+    for block in blocks:
+        block['x'] += block['width']
+        block['y'] -= block['height']
+        block['width'], block['height'] = block['height'], block['width']
+        block['x'] -= block['width']
+        block['y'] += block['height']
+    
+    return blocks
+
+def make_block_surf(blocks:list) -> None:
+    """ This function will make the blocks vanish """
+
+    surf = pygame.Surface([pygame.display.get_surface().get_width(), blocks[0]['height']])
+    for block in blocks:
+        bl = pygame.Surface([block['width'], block['height']])
+        bl.fill(block['color'])
+        bl.set_alpha(255)
+        surf.blit(bl, (block['x'], block['y']))
+    
+    rect = surf.get_rect()
+
+    return surf,rect
